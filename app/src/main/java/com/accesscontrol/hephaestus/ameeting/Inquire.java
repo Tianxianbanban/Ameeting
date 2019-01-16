@@ -1,6 +1,9 @@
 package com.accesscontrol.hephaestus.ameeting;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -57,6 +60,7 @@ import okhttp3.Response;
 public class Inquire extends Activity implements View.OnClickListener{
     protected static final int WHAT_SUCCESS = 1;
     protected static final int WHAT_ERROR = 2;
+
 
     private Button cuttime,addtime;
     private TextView timeText;
@@ -140,6 +144,12 @@ public class Inquire extends Activity implements View.OnClickListener{
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Meeting meeting=meetings.get(position);
                 Toast.makeText(Inquire.this,"点击了某个会议",Toast.LENGTH_SHORT).show();
+//                AlertDialog alertDialog=new AlertDialog.Builder(Inquire.this);//弹框
+//                alertDialog.setTitle("预定情况");
+//                alertDialog.setMessage("有关会议的更多信息");
+//                alertDialog.setCancelable(true);
+//                alertDialog.show();
+
             }
         });
     }
@@ -236,6 +246,8 @@ public class Inquire extends Activity implements View.OnClickListener{
         }
     }
 
+
+
     /**
      * 顶部菜单
      * @param menu
@@ -256,6 +268,11 @@ public class Inquire extends Activity implements View.OnClickListener{
                 break;
             case R.id.item_inquire_reservation://进行预定
                 Toast.makeText(this,"会议室预定",Toast.LENGTH_SHORT).show();
+                Intent reservation=new Intent(Inquire.this,Reservation.class);
+                //向预定功能活动传递mac地址信息
+                reservation.putExtra("mac_md5_data",MainActivity.macMd5String);
+                startActivity(reservation);
+
         }
         return true;
     }

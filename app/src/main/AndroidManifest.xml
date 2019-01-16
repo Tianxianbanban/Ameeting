@@ -23,7 +23,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Inquire">
+        <activity
+            android:launchMode="singleInstance"
+            android:name=".Inquire">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
