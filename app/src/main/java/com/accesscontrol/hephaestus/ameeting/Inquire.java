@@ -5,8 +5,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -130,8 +133,18 @@ public class Inquire extends Activity implements View.OnClickListener{
             }
             //  }
         }.start();
+
+        //列表的点击事件
+        inquire_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Meeting meeting=meetings.get(position);
+                Toast.makeText(Inquire.this,"点击了某个会议",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
+    //发送网络请求
     private String sendRequestWithOkHttp(){
         String result=null;
         try{
@@ -193,41 +206,6 @@ public class Inquire extends Activity implements View.OnClickListener{
     }
 
 
-    //请求json数据
-//    private String requestJson() throws Exception {
-//
-//        String path = "http://10.0.2.2/data.json";
-//        String result = null;
-//        URL url = null;
-//        //try {
-//        url = new URL(path);
-//        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-//        connection.setConnectTimeout(1000);
-//        connection.setReadTimeout(1000);
-//        connection.connect();
-//
-//        int responsecode = connection.getResponseCode();
-//        if (responsecode == 200) {
-//            InputStream is = connection.getInputStream();
-//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//            byte[] buffer = new byte[1024];
-//            int len = -1;
-//            while ((len = is.read(buffer)) != -1) {
-//                baos.write(buffer, 0, len);
-//            }
-//            baos.close();
-//            is.close();
-//            connection.disconnect();
-//            result = baos.toString();
-//        } else {
-//
-//        }
-////        } catch (Exception e) {
-////            e.printStackTrace();
-////        }
-//        return result;
-//    }
-
     class MeetingAdapter extends BaseAdapter{
         @Override
         public int getCount() {
@@ -256,5 +234,29 @@ public class Inquire extends Activity implements View.OnClickListener{
             timeText.setText(Ameeting.getTime());
             return convertView;
         }
+    }
+
+    /**
+     * 顶部菜单
+     * @param menu
+     * @return
+     */
+    //顶部菜单，选择返回或者预定
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.inquiremenu,menu);
+        return true;
+    }
+    //顶部菜单点击事件
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.item_inquire_back:
+                finish();//返回主页
+                break;
+            case R.id.item_inquire_reservation://进行预定
+                Toast.makeText(this,"会议室预定",Toast.LENGTH_SHORT).show();
+        }
+        return true;
     }
 }

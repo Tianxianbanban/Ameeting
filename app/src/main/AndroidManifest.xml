@@ -8,7 +8,8 @@
     <application android:label="@string/app_name">
         <uses-library android:name="com.google.android.things" />
 
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,7 +30,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Reservation">
+        <activity
+            android:label="会议室预定"
+            android:name=".Reservation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

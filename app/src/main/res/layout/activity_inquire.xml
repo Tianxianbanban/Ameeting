@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Inquire">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </LinearLayout>
     <LinearLayout
         android:layout_gravity="center_horizontal"
         android:orientation="horizontal"
@@ -13,25 +20,25 @@
         android:layout_height="wrap_content">
         <Button
             android:id="@+id/cuttime"
-            android:layout_margin="30dp"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/sugar"
+            android:layout_margin="20dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/minus"
             android:layout_toRightOf="@id/text_inquire_timeText"
             />
         <TextView
             android:layout_gravity="center"
-            android:layout_margin="30dp"
+            android:layout_margin="20dp"
             android:id="@+id/text_inquire_timeText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="时间选择" />
         <Button
             android:id="@+id/addtime"
-            android:layout_margin="30dp"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/sugar"
+            android:layout_margin="20dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/plus"
             android:layout_toRightOf="@id/text_inquire_timeText"
             />
     </LinearLayout>
@@ -44,5 +51,31 @@
         android:layout_height="wrap_content"
        >
     </ListView>
+
+    <!--<LinearLayout-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content">-->
+        <!--<Button-->
+            <!--android:id="@+id/bt_inquire_back"-->
+            <!--android:layout_margin="20dp"-->
+            <!--android:layout_width="30dp"-->
+            <!--android:layout_height="30dp"-->
+            <!--android:background="@drawable/minus"-->
+            <!--android:layout_toRightOf="@id/text_inquire_timeText"-->
+            <!--/>-->
+        <!--<Button-->
+            <!--android:id="@+id/bt_inquire_reservation"-->
+            <!--android:layout_margin="20dp"-->
+            <!--android:layout_width="30dp"-->
+            <!--android:layout_height="30dp"-->
+            <!--android:background="@drawable/plus"-->
+            <!--android:layout_toRightOf="@id/text_inquire_timeText"-->
+            <!--/>-->
+    <!--</LinearLayout>-->
+
+
+
 
 </LinearLayout>

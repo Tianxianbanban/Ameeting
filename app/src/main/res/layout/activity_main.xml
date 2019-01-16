@@ -12,7 +12,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:paddingTop="80dp"
+        android:paddingTop="65dp"
+        android:textSize="30sp"
         android:text="智能门禁系统"/>
 
 
@@ -22,26 +23,58 @@
         android:orientation="horizontal"
         android:layout_centerInParent="true"
         android:layout_gravity="center_horizontal"
-        android:padding="50dp"
+        android:padding="35dp"
         >
-        <Button
-            android:id="@+id/bt_main_signin"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/glove"
-            android:text="签到"
-            />
-        <Button
-            android:id="@+id/bt_main_inquire"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/gift"
-            android:text="查询"/>
-        <Button
-            android:id="@+id/bt_main_reservation"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/cake"
-            android:text="预定"/>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/bt_main_signin"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:background="@drawable/signin_p"
+                />
+            <TextView
+                android:text="签到"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/bt_main_inquire"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:background="@drawable/inquire_p"
+                 />
+            <TextView
+                android:text="查询"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/bt_main_reservation"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:background="@drawable/reservation_p"
+                 />
+            <TextView
+                android:text="预定"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>
