@@ -32,25 +32,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-/**
- * Skeleton of an Android Things activity.
- * <p>
- * Android Things peripheral APIs are accessible through the class
- * PeripheralManagerService. For example, the snippet below will open a GPIO pin and
- * set it to HIGH:
- *
- * <pre>{@code
- * PeripheralManagerService service = new PeripheralManagerService();
- * mLedGpio = service.openGpio("BCM6");
- * mLedGpio.setDirection(Gpio.DIRECTION_OUT_INITIALLY_LOW);
- * mLedGpio.setValue(true);
- * }</pre>
- * <p>
- * For more complex peripherals, look for an existing user-space driver, or implement one if none
- * is available.
- *
- * @see <a href="https://github.com/androidthings/contrib-drivers#readme">https://github.com/androidthings/contrib-drivers#readme</a>
- */
 
 /**
  * 动态显示列表
@@ -118,12 +99,7 @@ public class Inquire extends Activity implements View.OnClickListener{
             public void run() {
                 //联网得到json字符串
                 // try {
-//                    String jsonString = requestJson();
-//                    //解析json
-//                    Gson gson=new Gson();
-//                    //String s=gson.fromJson(jsonString,String.class);
-//                    meeting =gson.fromJson(jsonString, new TypeToken<List<Meeting>>(){}.getType());
-//
+
                 String jsonStringFromOkHttp=sendRequestWithOkHttp();
                 Log.d("look for json :",jsonStringFromOkHttp);
                 //显示，更新界面
@@ -144,11 +120,11 @@ public class Inquire extends Activity implements View.OnClickListener{
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Meeting meeting=meetings.get(position);
                 Toast.makeText(Inquire.this,"点击了某个会议",Toast.LENGTH_SHORT).show();
-//                AlertDialog alertDialog=new AlertDialog.Builder(Inquire.this);//弹框
-//                alertDialog.setTitle("预定情况");
-//                alertDialog.setMessage("有关会议的更多信息");
-//                alertDialog.setCancelable(true);
-//                alertDialog.show();
+                AlertDialog.Builder alertDialog=new AlertDialog.Builder(Inquire.this);//弹框
+                alertDialog.setTitle("预定情况");
+                alertDialog.setMessage("有关会议的更多信息");
+                alertDialog.setCancelable(true);
+                alertDialog.show();
 
             }
         });
@@ -159,7 +135,7 @@ public class Inquire extends Activity implements View.OnClickListener{
         String result=null;
         try{
             OkHttpClient client=new OkHttpClient();
-            Request request=new Request.Builder().get().url("http://192.168.2.105/data.json").build();
+            Request request=new Request.Builder().get().url("http://192.168.43.142/ori.json").build();
             Response response=client.newCall(request).execute();
             String responseData=response.body().string();
             result=responseData;

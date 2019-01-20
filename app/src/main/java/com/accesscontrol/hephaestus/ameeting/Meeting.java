@@ -34,4 +34,11 @@ public class Meeting {
     public void setTime(String time){
         this.time=time;
     }
+
+    @Override
+    public String toString() {
+        return "\n"+"id="+getId()+
+                "name="+getName()+
+                "time="+getTime()+"\n";
+    }
 }
