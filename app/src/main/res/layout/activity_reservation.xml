@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".activity.MainActivity">
 
     <ImageView
         android:id="@+id/image_reservation_qrcode"
@@ -13,14 +13,4 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="5"/>
-
-    <Button
-        android:id="@+id/bt_reservation_backtext"
-        android:background="#fff"
-        android:text="返回首页"
-        android:textSize="20sp"
-        android:layout_gravity="center_horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
 </LinearLayout>

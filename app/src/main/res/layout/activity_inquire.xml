@@ -5,14 +5,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Inquire">
+    tools:context=".activity.Inquire">
+    <!--<RelativeLayout-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+        <!--<Button-->
+            <!--android:id="@+id/bt_inquire_back"-->
+            <!--android:layout_alignParentLeft="true"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_marginLeft="5dp"-->
+            <!--android:background="@drawable/back_1"-->
+            <!--android:layout_width="25dp"-->
+            <!--android:layout_height="25dp" />-->
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        <!--<TextView-->
+            <!--android:id="@+id/tx_inquire_startsignin"-->
+            <!--android:clickable="true"-->
+            <!--android:text="前往预定"-->
+            <!--android:layout_marginRight="15dp"-->
+            <!--android:textSize="20sp"-->
+            <!--android:textColor="@color/colorBlack"-->
+            <!--android:drawableLeft="@drawable/book"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content" />-->
+    <!--</RelativeLayout>-->
 
-    </LinearLayout>
     <LinearLayout
         android:layout_gravity="center_horizontal"
         android:orientation="horizontal"
@@ -20,62 +40,46 @@
         android:layout_height="wrap_content">
         <Button
             android:id="@+id/cuttime"
-            android:layout_margin="20dp"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:background="@drawable/minus"
             android:layout_toRightOf="@id/text_inquire_timeText"
             />
         <TextView
-            android:layout_gravity="center"
-            android:layout_margin="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:id="@+id/text_inquire_timeText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="时间选择" />
         <Button
             android:id="@+id/addtime"
-            android:layout_margin="20dp"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:background="@drawable/plus"
             android:layout_toRightOf="@id/text_inquire_timeText"
             />
     </LinearLayout>
-
-    <ListView
-        android:scrollbars="none"
-        android:divider="@null"
-        android:id="@+id/inquire_listview"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-       >
-    </ListView>
-
-    <!--<LinearLayout-->
-        <!--android:layout_gravity="center_horizontal"-->
-        <!--android:orientation="horizontal"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content">-->
-        <!--<Button-->
-            <!--android:id="@+id/bt_inquire_back"-->
-            <!--android:layout_margin="20dp"-->
-            <!--android:layout_width="30dp"-->
-            <!--android:layout_height="30dp"-->
-            <!--android:background="@drawable/minus"-->
-            <!--android:layout_toRightOf="@id/text_inquire_timeText"-->
-            <!--/>-->
-        <!--<Button-->
-            <!--android:id="@+id/bt_inquire_reservation"-->
-            <!--android:layout_margin="20dp"-->
-            <!--android:layout_width="30dp"-->
-            <!--android:layout_height="30dp"-->
-            <!--android:background="@drawable/plus"-->
-            <!--android:layout_toRightOf="@id/text_inquire_timeText"-->
-            <!--/>-->
-    <!--</LinearLayout>-->
-
-
-
+        android:layout_height="match_parent">
+        <ListView
+            android:scrollbars="none"
+            android:divider="@null"
+            android:id="@+id/inquire_listview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </ListView>
+        <ProgressBar
+            android:id="@+id/pb_inquire"
+            android:layout_gravity="center"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
+        <TextView
+            android:layout_gravity="center"
+            android:id="@+id/tx_aboutmeetinglist_null"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
 
 </LinearLayout>

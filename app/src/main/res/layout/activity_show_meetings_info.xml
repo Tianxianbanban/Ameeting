@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.Inquire">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    </LinearLayout>
+    <LinearLayout
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/bt_show_cut"
+            android:layout_margin="20dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/minus"
+            android:layout_toRightOf="@id/tx_show_dateText"
+            />
+        <TextView
+            android:layout_gravity="center"
+            android:layout_margin="20dp"
+            android:id="@+id/tx_show_dateText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="时间选择" />
+        <Button
+            android:id="@+id/bt_show_add"
+            android:layout_margin="20dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/plus"
+            android:layout_toRightOf="@id/tx_show_dateText"
+            />
+    </LinearLayout>
+
+    <ListView
+        android:scrollbars="none"
+        android:divider="@null"
+        android:id="@+id/lv_show"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+    </ListView>
+
+    <!--<LinearLayout-->
+    <!--android:layout_gravity="center_horizontal"-->
+    <!--android:orientation="horizontal"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content">-->
+    <!--<Button-->
+    <!--android:id="@+id/bt_inquire_back"-->
+    <!--android:layout_margin="20dp"-->
+    <!--android:layout_width="30dp"-->
+    <!--android:layout_height="30dp"-->
+    <!--android:background="@drawable/minus"-->
+    <!--android:layout_toRightOf="@id/text_inquire_timeText"-->
+    <!--/>-->
+    <!--<Button-->
+    <!--android:id="@+id/bt_inquire_reservation"-->
+    <!--android:layout_margin="20dp"-->
+    <!--android:layout_width="30dp"-->
+    <!--android:layout_height="30dp"-->
+    <!--android:background="@drawable/plus"-->
+    <!--android:layout_toRightOf="@id/text_inquire_timeText"-->
+    <!--/>-->
+    <!--</LinearLayout>-->
+
+
+
+
+</LinearLayout>

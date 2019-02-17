@@ -1,19 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Signin">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="人脸签到"/>
+    android:orientation="vertical"
+    tools:context=".activity.Signin">
+    <!--<RelativeLayout-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+        <!--<Button-->
+            <!--android:id="@+id/bt_signin_back"-->
+            <!--android:layout_alignParentLeft="true"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_marginLeft="5dp"-->
+            <!--android:background="@drawable/left"-->
+            <!--android:layout_width="25dp"-->
+            <!--android:layout_height="25dp" />-->
+        <!--<TextView-->
+            <!--android:text="人脸签到"-->
+            <!--android:textColor="@color/colorBlack"-->
+            <!--android:textSize="20sp"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_toRightOf="@id/bt_signin_back"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content" />-->
 
-    <Button
-        android:id="@+id/bt_sign_takephoto"
-        android:text="点击拍照"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <!--<TextView-->
+            <!--android:id="@+id/tx_signin_startsignin"-->
+            <!--android:clickable="true"-->
+            <!--android:text="进行签到"-->
+            <!--android:layout_marginRight="15dp"-->
+            <!--android:textSize="20sp"-->
+            <!--android:textColor="@color/colorBlack"-->
+            <!--android:drawableLeft="@drawable/capture"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content" />-->
+    <!--</RelativeLayout>-->
+    <!--<Button-->
+        <!--android:onClick="activeEngine"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content" />-->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/image_sign_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <TextView
+            android:id="@+id/tx_signin_infos"
+            android:text="请正对摄像头，并开始签到…"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
