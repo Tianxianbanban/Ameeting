@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.ImageFormat;
+import android.graphics.SurfaceTexture;
 import android.graphics.Typeface;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -35,15 +36,9 @@ import android.util.SparseIntArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Surface;
-import android.view.TextureView;
-import android.view.View;
-import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.accesscontrol.hephaestus.ameeting.adapter.MeetingAdapter;
 import com.accesscontrol.hephaestus.ameeting.data.Constants;
 import com.accesscontrol.hephaestus.ameeting.R;
 import com.accesscontrol.hephaestus.ameeting.json.GetAllMeeting;
@@ -103,8 +98,6 @@ import okhttp3.Response;
  */
 public class Signin extends Activity{
     String TAG="Signin";
-//    private Button bt_signin_back;//返回
-//    private TextView tx_signin_startsignin;//点击进行签到
     private ImageView imageView;//显示抓拍照片
     private TextView tx_signin_infos;//反馈信息显示
 
@@ -128,6 +121,10 @@ public class Signin extends Activity{
     private CameraDevice mCameraDevice;
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
 
+    private Semaphore mCameraOpenCloseLock = new Semaphore(1);
+    private CaptureRequest.Builder mPreviewRequestBuilder;
+    private CaptureRequest mPreviewRequest;
+
     //为了使照片竖直显示
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
@@ -135,156 +132,12 @@ public class Signin extends Activity{
         ORIENTATIONS.append(Surface.ROTATION_180, 270);
         ORIENTATIONS.append(Surface.ROTATION_270, 180);
     }
-
-    private Semaphore mCameraOpenCloseLock = new Semaphore(1);
-    private CaptureRequest.Builder mPreviewRequestBuilder;
-    private CaptureRequest mPreviewRequest;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);//用于隐藏标题栏
-        setContentView(R.layout.activity_signin);
-
-//        ActionBar actionBar=getActionBar();
-//        actionBar.hide();
-
-//        bt_signin_back=(Button)findViewById(R.id.bt_signin_back);//返回
-//        tx_signin_startsignin=(TextView)findViewById(R.id.tx_signin_startsignin);//点击进行签到
-        imageView=(ImageView)findViewById(R.id.image_sign_image);//用于展示图片
-        tx_signin_infos=(TextView)findViewById(R.id.tx_signin_infos) ;//信息反馈显示
-
-        //点击事件
-//        bt_signin_back.setOnClickListener(this);
-//        tx_signin_startsignin.setOnClickListener(this);
-
-        //进行基本权限的检查
-        if (!Util.checkPermissions(Signin.this,NEEDED_PERMISSIONS)) {
-            Log.d(TAG, "onCreate: 缺少权限"+NEEDED_PERMISSIONS);
-        } else {
-            activeEngine();//激活引擎
-            initEngine();//初始化引擎
-        }
-    }
-
-
-    private void openCamera() {
-        final long openCamera = System.nanoTime();//开始时间
-        HandlerThread handlerThread = new HandlerThread("Camera2");
-        handlerThread.start();
-        childHandler = new Handler(handlerThread.getLooper());
-
-        mImageReader = ImageReader.newInstance(imageView.getWidth(), imageView.getHeight(), ImageFormat.JPEG, 1);
-        mImageReader.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {//处理临时照片
-
-            @Override
-            public void onImageAvailable(ImageReader reader) {
-
-                mCameraDevice.close();//将相机关闭
-                mCameraDevice = null;
-                // 拿到拍照照片数据
-                Image image = reader.acquireNextImage();
-                ByteBuffer buffer = image.getPlanes()[0].getBuffer();
-                byte[] bytes = new byte[buffer.remaining()];
-                Log.d(TAG, "onImageAvailable: 获取照片byte数组");
-                buffer.get(bytes);//由缓冲区存入字节数组
-                bitmap= BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-//                final Bitmap bitmap = Bitmap.createScaledBitmap(bitmap, 10, 10, true);
-                //展示图片之间已经可以对图片进行属性检测
-                //如果检测不通过则继续拍照
-                long consumingTime = System.nanoTime()-openCamera;//以毫微秒为单位
-                Log.d(TAG, "openCamera: 时间点1"+consumingTime/1000000+"ms");
-                byte[] requestBytes=getProcessBitmap(bitmap);//图片的字节数组
-                Log.d(TAG, "onImageAvailable: 人脸特征数据准备 requestBytes:"+requestBytes.toString());
-                if (requestBytes!=null){
-                    byte[] data = Base64.encode(requestBytes,0,requestBytes.length,0);
-                    Log.d(TAG, "onImageAvailable: 作为网络请求参数的requestData："+data.toString());
-                    getFeedback(data.toString());
-                }
-                if (bitmap != null) {//在主线程中展示照片
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            imageView.setImageBitmap(bitmap);
-                            Log.d(TAG, "onImageAvailable: 设置进imageview");
-//                            openCamera();
-                        }
-                    });
-
-
-
-//                    getFeedback(requestData);//网络请求
-                }
-            }
-        }, childHandler);
-
-
-        if (mCameraManager == null) {
-            mCameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
-        }
-
-        String cameraIds[] = {};
-        try {
-            cameraIds = mCameraManager.getCameraIdList();
-        } catch (CameraAccessException e) {
-            Log.e(TAG, "Cam access exception getting IDs", e);
-        }
-        if (cameraIds.length < 1) {
-            Log.e(TAG, "No cameras found");
-            return;
-        }
-        mCameraID = cameraIds[0];
-        try {
-            //进行权限确认
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-//                MyUtil.setToast(MainActivity.this, "没有照相机权限", false);
-                Toast.makeText(Signin.this,"没有相机权限",Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "openCamera: 没有相机权限");
-                return;
-            }
-            mCameraManager.openCamera(mCameraID, stateCallback, null);
-
-        } catch (CameraAccessException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private void getFeedback(String requestData){
-        final String url=HttpUtil.getGetAllMeetingUrl() +"?encryptedString="+requestData+"&macAddress="+AboutMac.getMD5String(AboutMac.getMac());
-        Log.d("url", "onCreate: "+url);
-        RequestBody requestBody=new FormBody.Builder()
-                .add("encryptedString",requestData)
-                .add("macAddress",AboutMac.getMD5String(AboutMac.getMac()))
-
-                .build();
-        HttpUtil.sendOkHttpRequestWithBody(HttpUtil.getFaceOpenUrl(), requestBody, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(Signin.this,"服务器故障！",Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-
-            }
-        });
-
-    }
-
-
     //该类用于接收相机的连接状态的更新
     private CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
         @Override
         public void onOpened(@NonNull CameraDevice camera) {
             //打开摄像头
             mCameraDevice = camera;
-            Log.d(TAG, "onOpened: takepicture");
             //拍照
             takePicture();
         }
@@ -302,12 +155,112 @@ public class Signin extends Activity{
 
         @Override
         public void onError(@NonNull CameraDevice camera, int error) {
+            mCameraDevice.close();//!
             mCameraDevice = null;
             //有错误
 //            MyUtil.setToast(MainActivity.this, "摄像头开启失败", false);
-            Toast.makeText(Signin.this,"摄像头开启失败",Toast.LENGTH_SHORT).show();
+            Toast.makeText(Signin.this,"摄像头开启失败"+"错误码"+error,Toast.LENGTH_SHORT).show();
         }
     };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);//用于隐藏标题栏
+        setContentView(R.layout.activity_signin);
+
+//        ActionBar actionBar=getActionBar();
+//        actionBar.hide();
+        imageView=(ImageView)findViewById(R.id.image_sign_image);//用于展示图片
+        tx_signin_infos=(TextView)findViewById(R.id.tx_signin_infos) ;//信息反馈显示
+
+        //进行基本权限的检查
+        if (!Util.checkPermissions(Signin.this,NEEDED_PERMISSIONS)) {
+            Log.d(TAG, "onCreate: 缺少权限"+NEEDED_PERMISSIONS);
+        } else {
+            activeEngine();//激活引擎
+            initEngine();//初始化引擎
+        }
+    }
+
+    private void handThread(){
+        HandlerThread handlerThread = new HandlerThread("Camera2");
+        handlerThread.start();
+        childHandler = new Handler(handlerThread.getLooper());
+    }
+    private void readyWork(){//有关摄像头的设备设置与权限
+        if (mCameraManager == null) {
+            //获取摄像头的管理者
+            mCameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+        }
+        String cameraIds[] = {};
+        try {
+            cameraIds = mCameraManager.getCameraIdList();//获取摄像头设备列表
+            Log.d(TAG, "openCamera: "+cameraIds[0]);
+        } catch (CameraAccessException e) {
+            Log.e(TAG, "Cam access exception getting IDs", e);
+        }
+        if (cameraIds.length < 1) {
+            Log.e(TAG, "No cameras found");
+            return;
+        }
+        mCameraID = cameraIds[0];
+        try {
+            //进行权限确认
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(Signin.this,"没有相机权限",Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "openCamera: 没有相机权限");
+                return;
+            }
+            ////打开相机，第一个参数指示打开哪个摄像头，第二个参数stateCallback为相机的状态回调接口，
+            // 第三个参数用来确定Callback在哪个线程执行，为null的话就在当前线程执行
+            mCameraManager.openCamera(mCameraID, stateCallback, null);
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+    }
+    private void openCamera() {
+        handThread();//关于相机线程
+        readyWork();
+        mImageReader = ImageReader.newInstance(imageView.getWidth(), imageView.getHeight(), ImageFormat.JPEG, 1);
+        mImageReader.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {//处理临时照片
+            @Override
+            public void onImageAvailable(ImageReader reader) {
+
+                mCameraDevice.close();//将相机关闭
+                mCameraDevice = null;
+                // 拿到拍照照片数据
+                Image image = reader.acquireNextImage();
+                ByteBuffer buffer = image.getPlanes()[0].getBuffer();
+                byte[] bytes = new byte[buffer.remaining()];
+                buffer.get(bytes);//由缓冲区存入字节数组
+                bitmap= BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//                final Bitmap bitmap = Bitmap.createScaledBitmap(bitmap, 10, 10, true);
+                //展示图片之间已经可以对图片进行属性检测
+                //如果检测不通过则继续拍照
+//                byte[] requestBytes=getProcessBitmap(bitmap);//图片处理得到的字节数组
+//                if (requestBytes!=null){
+//                    byte[] data = Base64.encode(requestBytes,0,requestBytes.length,0);
+//                    getFeedback(data.toString());
+//                }
+                if (bitmap != null) {//在主线程中展示照片
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            imageView.setImageBitmap(bitmap);
+                            Log.d(TAG, "onImageAvailable: 设置进imageview");
+//                            openCamera();
+                        }
+                    });
+//                    getFeedback(requestData);//网络请求
+                }
+            }
+        }, childHandler);
+
+
+    }
+
+
 
     private void takePicture(){
         try {
@@ -321,8 +274,7 @@ public class Signin extends Activity{
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             // 根据设备方向计算设置照片的方向
             builder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
-            //CameraCaptureSession 是一个事务，用来向相机设备发送获取图像的请求。
-            //有关创建一个捕获会话
+            //有关创建一个捕获会话，CameraCaptureSession 是一个事务，用来向相机设备发送获取图像的请求。
             mCameraDevice.createCaptureSession(Arrays.asList(mImageReader.getSurface()), new CameraCaptureSession.StateCallback() {
                 @Override
                 public void onConfigured(@NonNull final CameraCaptureSession session) {
@@ -335,12 +287,12 @@ public class Signin extends Activity{
 
                     } catch (CameraAccessException e) {
                         e.printStackTrace();
+                        Log.d(TAG, "onConfigured: CameraAccessException");
                     }
                 }
 
                 @Override
                 public void onConfigureFailed(@NonNull CameraCaptureSession session) {
-//                    MyUtil.setToast(MainActivity.this,"配置错误",false);
                     Toast.makeText(Signin.this,"配置错误",Toast.LENGTH_SHORT).show();
                 }
             },childHandler);
@@ -349,6 +301,9 @@ public class Signin extends Activity{
             e.printStackTrace();
         }
     }
+
+
+
 
 
     /**
@@ -424,8 +379,7 @@ public class Signin extends Activity{
     }
 
     /**
-     * 追加提示信息
-     *
+     *有关提示信息
      * @param stringBuilder 提示的字符串的存放对象
      * @param styleSpan     添加的字符串的格式
      * @param strings       字符串数组
@@ -448,8 +402,9 @@ public class Signin extends Activity{
     在获取人脸特征之前呢对bitmap进行的处理
      */
     public byte[] getProcessBitmap(Bitmap bitmap){
+        //1
         byte[] featureByte = new byte[0];//存放人脸特征的byte数组
-        final long getProcessBitmapStartTime = System.nanoTime();
+
         final SpannableStringBuilder notificationSpannableStringBuilder = new SpannableStringBuilder();//与文本样式有关
         if (faceEngineCode != ErrorInfo.MOK) {
             addNotificationInfo(notificationSpannableStringBuilder, null, " face engine not initialized!");
@@ -463,7 +418,7 @@ public class Signin extends Activity{
             return null;
         }
 
-        //确保传给引擎的BGR24数据宽度为4的倍数
+        //2确保传给引擎的BGR24数据宽度为4的倍数
         bitmap = Util.alignBitmapForBgr24(bitmap);
         //如果bitmap为空，则反馈消息
         if (bitmap == null) {
@@ -496,6 +451,7 @@ public class Signin extends Activity{
             Log.i(TAG, "开始人脸检测时间点1……processImage: fd costTime = " + (System.currentTimeMillis() - fdStartTime));
         }
 
+
         /**
          * 若检测结果人脸数量大于0，若人脸数量为0，则无法进行下一步操作，操作结束
          */
@@ -512,8 +468,6 @@ public class Signin extends Activity{
             return null;
         }
         addNotificationInfo(notificationSpannableStringBuilder, null, "\n");
-
-
         /**
          * 上一步已获取到人脸位置和角度信息，传入给process函数，进行年龄、性别、三维角度检测
          */
@@ -548,9 +502,8 @@ public class Signin extends Activity{
 
             return null;
         }
-
         /**
-         * 5.年龄、性别、三维角度已获取成功，添加信息到提示文字中
+         * 年龄、性别、三维角度已获取成功，添加信息到提示文字中
          */
         //年龄数据
         if (ageInfoList.size() > 0) {
@@ -610,7 +563,7 @@ public class Signin extends Activity{
         addNotificationInfo(notificationSpannableStringBuilder, null, "\n");
 
         /**
-         * 6.最后将图片内的所有人脸进行一一比对并添加到提示文字中
+         * 最后将图片内的所有人脸进行一一比对并添加到提示文字中
          */
         if (faceInfoList.size() > 0) {
             FaceFeature[] faceFeatures = new FaceFeature[faceInfoList.size()];
@@ -637,7 +590,6 @@ public class Signin extends Activity{
 
             //将人脸特征数据转换成byte数组，目前只取一个人脸
             featureByte=faceFeatures[0].getFeatureData();
-            Log.d(TAG, "getProcessBitmap: 提取人脸特征数据byte数组 getFeatureData="+featureByte.toString());
             
             //人脸特征的数量大于1，将所有特征进行比较
             if (faceFeatures.length >= 1) {
@@ -674,8 +626,37 @@ public class Signin extends Activity{
         return featureByte;
     }
 
+    private void getFeedback(String requestData){
+        final String url=HttpUtil.getGetAllMeetingUrl() +"?encryptedString="+requestData+"&macAddress="+AboutMac.getMD5String(AboutMac.getMac());
+        Log.d("url", "onCreate: "+url);
+        RequestBody requestBody=new FormBody.Builder()
+                .add("encryptedString",requestData)
+                .add("macAddress",AboutMac.getMD5String(AboutMac.getMac()))
+
+                .build();
+        HttpUtil.sendOkHttpRequestWithBody(HttpUtil.getFaceOpenUrl(), requestBody, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(Signin.this,"服务器故障！",Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+            }
+        });
+
+    }
+
     @Override
     protected void onDestroy() {
+        mCameraDevice.close();//将相机关闭
+        mCameraDevice = null;
         //关闭引擎
         if (faceEngine != null) {
             faceEngineCode = faceEngine.unInit();
@@ -683,7 +664,6 @@ public class Signin extends Activity{
             Log.i("unInitEngine", "unInitEngine: " + faceEngineCode);
         }
         super.onDestroy();
-
     }
 
     /**
@@ -705,9 +685,10 @@ public class Signin extends Activity{
                 finish();//返回主页
                 break;
             case R.id.item_signin_signin://打开摄像头签到
+//                handThread();
+//                readyWork();
                 openCamera();
                 break;
-
         }
         return true;
     }

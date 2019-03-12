@@ -10,12 +10,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import android.view.Window;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.accesscontrol.hephaestus.ameeting.R;
 import com.accesscontrol.hephaestus.ameeting.adapter.MeetingAdapter;
@@ -176,7 +174,6 @@ public class Inquire extends Activity {//AndroidThings对于AppCompatActivity注
                 finish();//返回主页
                 break;
             case R.id.item_inquire_reservation://进行预定
-                Toast.makeText(this,"会议室预定",Toast.LENGTH_SHORT).show();
                 Intent reservation=new Intent(Inquire.this,Reservation.class);
                 //向预定功能活动传递mac地址信息
                 reservation.putExtra("mac_md5_data",MainActivity.macMd5String);

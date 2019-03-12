@@ -39,10 +39,10 @@ public class MeetingAdapter extends ArrayAdapter<GetAllMeeting.Content.Info>{
 
         int position_flag=info.getFlag();
         if (position_flag==0){//正在进行
-            iv_indication.setImageResource(R.drawable.green);//绿色指示正在进行
+            iv_indication.setImageResource(R.drawable.yellow);//黄色指示正在进行
             tx_aboutmeeting.setText("进行中…");
         }else if (position_flag==1){//未开始
-            iv_indication.setImageResource(R.drawable.yellow);//黄色指示未开始
+            iv_indication.setImageResource(R.drawable.green);//绿色指示未开始
         }
         return view;
     }
