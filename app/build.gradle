@@ -52,6 +52,7 @@ dependencies {
     implementation 'com.jakewharton.rxbinding:rxbinding:1.0.1'
     implementation 'com.dhh:rxlifecycle:1.6'
     implementation 'com.squareup.okhttp3:mockwebserver:3.9.0'
+    implementation 'com.bilal:android-things-camera:1.0.0'//有关摄像头的使用
 
 
 }

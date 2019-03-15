@@ -1,5 +1,11 @@
 package com.accesscontrol.hephaestus.ameeting.util;
 
+/**
+ * 先关信息
+ * 当前日期的获取
+ * 日期更改
+ */
+
 import android.content.Context;
 import android.widget.Toast;
 
@@ -58,4 +64,5 @@ public class ShowInfoUtil {
             return null;
         }
     }
+
 }

@@ -63,7 +63,7 @@ public class MainActivity extends Activity implements android.view.View.OnClickL
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.YEAR, 2019);
             calendar.set(Calendar.MONTH, 2);
-            calendar.set(Calendar.DAY_OF_MONTH, 5);
+            calendar.set(Calendar.DAY_OF_MONTH, 14);
             timeManager.setTime(calendar.getTimeInMillis());
         } catch (Exception e) {
             Log.e("SET_TIME", "SET_TIME 权限失效");

@@ -48,6 +48,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <ImageView
+            android:id="@+id/image_sign_imagestop"
+            android:layout_width="320dp"
+            android:layout_height="240dp"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            android:scaleType="centerCrop" />
+        <ImageView
             android:id="@+id/image_sign_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
